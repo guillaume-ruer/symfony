@@ -19,7 +19,7 @@ class DealController extends AbstractController {
      */ 
     public function showAction($index) {
         if(!ctype_digit($index)){
-            throw new \Exception("Index invalide");
+            $this->createNotFoundException();
         }
         return new Response('Index : '.$index, Response::HTTP_OK);
     }
