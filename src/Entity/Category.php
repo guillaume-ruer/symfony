@@ -29,6 +29,11 @@ class Category
      */
     private $deals;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Deal::class, inversedBy="categories")
+     */
+    private $deal;
+
     public function __construct()
     {
         $this->deals = new ArrayCollection();
@@ -78,6 +83,18 @@ class Category
                 $deal->setCategory(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getDeal(): ?Deal
+    {
+        return $this->deal;
+    }
+
+    public function setDeal(?Deal $deal): self
+    {
+        $this->deal = $deal;
 
         return $this;
     }

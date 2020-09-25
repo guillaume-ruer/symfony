@@ -23,4 +23,19 @@ class DealController extends AbstractController {
         }
         return new Response('Index : '.$index, Response::HTTP_OK);
     }
+
+    /**
+     * @Route("/deal/toggle/{index}", name="deal_toggle", requirements={"index":"\d+"})
+     */
+    public function toggleEnableAction($dealId) {
+        $deal = $this->getDoctrine()
+            ->getRepository('App:Deal')
+            ->find($dealId);
+        
+        if (!$deal) {
+            throw $this->createNotFoundException(
+                'No deal found for id ' . $dealId
+            );
+        }
+    }
 }
