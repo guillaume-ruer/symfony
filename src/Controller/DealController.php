@@ -25,7 +25,7 @@ class DealController extends AbstractController {
     }
 
     /**
-     * @Route("/deal/toggle/{index}", name="deal_toggle", requirements={"index":"\d+"})
+     * @Route("/deal/toggle/{dealId}", name="deal_toggle", requirements={"index":"\d+"})
      */
     public function toggleEnableAction($dealId) {
         $deal = $this->getDoctrine()
@@ -37,5 +37,7 @@ class DealController extends AbstractController {
                 'No deal found for id ' . $dealId
             );
         }
+        $deal->setEnable(true);
+        return new Response('Deal : '.$deal->getName()." Enabled : ".$deal->getEnable(), Response::HTTP_OK);
     }
 }
