@@ -1,0 +1,4 @@
+easy_admin:
+    entities:
+        Deal:
+            class: App\Entity\Deal

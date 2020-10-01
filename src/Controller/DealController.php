@@ -28,16 +28,33 @@ class DealController extends AbstractController {
      * @Route("/deal/toggle/{dealId}", name="deal_toggle", requirements={"index":"\d+"})
      */
     public function toggleEnableAction($dealId) {
-        $deal = $this->getDoctrine()
-            ->getRepository('App:Deal')
-            ->find($dealId);
+        $em = $this->getDoctrine()->getManager();
+        $deal = $em->getRepository('App:Deal')->find($dealId);
         
         if (!$deal) {
             throw $this->createNotFoundException(
                 'No deal found for id ' . $dealId
             );
         }
-        $deal->setEnable(true);
+        if ($deal->getEnable()) {
+            $deal->setEnable(FALSE);
+        } else {
+            $deal->setEnable(TRUE);
+        }
+        $em->flush();
         return new Response('Deal : '.$deal->getName()." Enabled : ".$deal->getEnable(), Response::HTTP_OK);
+    }
+
+    /**
+     * @Route("/deal/show/all", name="show_all_deal")
+     */
+    public function showDealsAction() {
+        $em = $this->getDoctrine()->getManager();
+        $categories = $em->getRepository('App:Category')->findAll();
+        $deals = $em->getRepository('App:Deal')->findAll();
+        return $this->render(
+            '/deal/index.html.twig',
+            array('categories' => $categories, 'deals' => $deals)
+        );
     }
 }

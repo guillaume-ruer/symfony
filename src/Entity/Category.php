@@ -25,14 +25,9 @@ class Category
     private $name;
 
     /**
-     * @ORM\OneToMany(targetEntity=Deal::class, mappedBy="category")
+     * @ORM\ManyToMany(targetEntity=Deal::class, mappedBy="categories")
      */
     private $deals;
-
-    /**
-     * @ORM\ManyToOne(targetEntity=Deal::class, inversedBy="categories")
-     */
-    private $deal;
 
     public function __construct()
     {
@@ -68,7 +63,7 @@ class Category
     {
         if (!$this->deals->contains($deal)) {
             $this->deals[] = $deal;
-            $deal->setCategory($this);
+            $deal->addCategory($this);
         }
 
         return $this;
@@ -78,23 +73,8 @@ class Category
     {
         if ($this->deals->contains($deal)) {
             $this->deals->removeElement($deal);
-            // set the owning side to null (unless already changed)
-            if ($deal->getCategory() === $this) {
-                $deal->setCategory(null);
-            }
+            $deal->removeCategory($this);
         }
-
-        return $this;
-    }
-
-    public function getDeal(): ?Deal
-    {
-        return $this->deal;
-    }
-
-    public function setDeal(?Deal $deal): self
-    {
-        $this->deal = $deal;
 
         return $this;
     }

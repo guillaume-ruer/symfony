@@ -35,7 +35,7 @@ class Deal
     private $created_at;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", nullable=true)
      */
     private $updated_at;
 
@@ -50,20 +50,14 @@ class Deal
     private $enable;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="Deals")
-     */
-    private $category;
-
-    /**
-     * @ORM\OneToMany(targetEntity=Category::class, mappedBy="deal")
+     * @ORM\ManyToMany(targetEntity=Category::class, inversedBy="deals")
      */
     private $categories;
 
     public function __construct()
     {
         $this->categories = new ArrayCollection();
-        $this->created_at = new \DateTime();
-        $this->updated_at = new \DateTime();
+        $this->created_at = new \Datetime();
     }
 
     public function getId(): ?int
@@ -112,7 +106,7 @@ class Deal
         return $this->updated_at;
     }
 
-    public function setUpdatedAt(\DateTimeInterface $updated_at): self
+    public function setUpdatedAt(?\DateTimeInterface $updated_at): self
     {
         $this->updated_at = $updated_at;
 
@@ -143,18 +137,6 @@ class Deal
         return $this;
     }
 
-    public function getCategory(): ?Category
-    {
-        return $this->category;
-    }
-
-    public function setCategory(?Category $category): self
-    {
-        $this->category = $category;
-
-        return $this;
-    }
-
     /**
      * @return Collection|Category[]
      */
@@ -167,7 +149,6 @@ class Deal
     {
         if (!$this->categories->contains($category)) {
             $this->categories[] = $category;
-            $category->setDeal($this);
         }
 
         return $this;
@@ -177,10 +158,6 @@ class Deal
     {
         if ($this->categories->contains($category)) {
             $this->categories->removeElement($category);
-            // set the owning side to null (unless already changed)
-            if ($category->getDeal() === $this) {
-                $category->setDeal(null);
-            }
         }
 
         return $this;

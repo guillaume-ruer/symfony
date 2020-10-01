@@ -1,0 +1,18 @@
+{% extends "base.html.twig" %}
+
+{% block title %}{{site}}{% endblock %}
+
+{% block body %}
+<ul>
+    {% for category in categories %}
+    <li>{{category.name}}</li>
+    <ul>
+        {% for deal in deals %}
+            {% if category in deal.categories %}
+                <li>{{deal.name}}</li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+    {% endfor %}
+</ul>
+{% endblock %}
