@@ -4,6 +4,9 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
+use App\Form\DealType;
+use App\Entity\Deal;
 
 class DealController extends AbstractController {
    /**
@@ -55,6 +58,29 @@ class DealController extends AbstractController {
         return $this->render(
             '/deal/index.html.twig',
             array('categories' => $categories, 'deals' => $deals)
+        );
+    }
+
+    /**
+     * @Route("/deal/new", name="deal_new")
+     */
+    public function newAction(Request $request) {
+        $deal = new Deal();
+        $form = $this->createForm(DealType::class, $deal);
+
+        $form->handleRequest($request);
+	    if ($form->isSubmitted() && $form->isValid()) {
+            $deal->setEnable(false);
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($deal);
+            $em->flush();
+            $this->addFlash('notice', 'Deal ajouté !');
+            return $this->redirectToRoute('show_all_deal');
+        }
+
+        return $this->render(
+            '/deal/new.html.twig',
+            array('form' => $form->createView())
         );
     }
 }

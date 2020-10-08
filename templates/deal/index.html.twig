@@ -1,18 +1,31 @@
 {% extends "base.html.twig" %}
 
-{% block title %}{{site}}{% endblock %}
+{% block title %}
+	{{site}}
+{% endblock %}
 
 {% block body %}
-<ul>
-    {% for category in categories %}
-    <li>{{category.name}}</li>
-    <ul>
-        {% for deal in deals %}
-            {% if category in deal.categories %}
-                <li>{{deal.name}}</li>
-            {% endif %}
-        {% endfor %}
-    </ul>
-    {% endfor %}
-</ul>
+	{% for flash_message in app.session.flashBag.get('notice') %}
+		<div class="flash-notice">
+			{{ flash_message }}
+		</div>
+	{% endfor %}
+	<ul>
+		{% for category in categories %}
+			<li>{{category.name|upper}}</li>
+			<ul>
+				{% for deal in deals %}
+					{% if category in deal.categories %}
+						<li>Nom :
+							{{deal.name|capitalize}}
+							{{deal.price}}
+							€,
+							{{deal.description|capitalize}}
+							-
+							{{deal.createdAt|date('m/d/Y')}}</li>
+					{% endif %}
+				{% endfor %}
+			</ul>
+		{% endfor %}
+	</ul>
 {% endblock %}
