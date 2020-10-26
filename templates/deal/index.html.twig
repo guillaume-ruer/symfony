@@ -10,22 +10,44 @@
 			{{ flash_message }}
 		</div>
 	{% endfor %}
+	<h2>
+		{{ slogan }}
+	</h2>
 	<ul>
 		{% for category in categories %}
-			<li>{{category.name|upper}}</li>
+			<li><a href={{"/category/" ~ category.name}}>{{category.name|upper}}</a></li>
 			<ul>
+				{% set i = 0 %}
 				{% for deal in deals %}
-					{% if category in deal.categories %}
+					{% if category in deal.categories and deal.enable and i < 2 and deal.user is null %}
+						{% set i = i + 1 %}
 						<li>Nom :
 							{{deal.name|capitalize}}
 							{{deal.price}}
 							€,
 							{{deal.description|capitalize}}
 							-
-							{{deal.createdAt|date('m/d/Y')}}</li>
+							{{deal.createdAt|date('m/d/Y')}}
+							{% if is_granted('IS_AUTHENTICATED_FULLY') %}
+								<a href={{"/deal/book/" ~ deal.id}}>
+									<button class="btn btn-primary btn-sm">Réserver</button>
+								</a>
+							{% endif %}
+						</li>
 					{% endif %}
 				{% endfor %}
 			</ul>
 		{% endfor %}
 	</ul>
+	{% if is_granted('IS_AUTHENTICATED_FULLY') %}
+		<h3>Bonjour {{ app.user.username }}</h3>
+		<a href='/logout' class="btn btn-secondary">Se déconnecter</a>
+		<a href={{'/deal/user/' ~ app.user.id}} class="btn btn-success">Réservations</a>
+	{% else %}
+		<a href='/login' class="btn btn-primary">Se connecter</a>
+		<a href='/signin' class="btn btn-secondary">Créer un compte</a>
+	{% endif %}
+	{% if is_granted('ROLE_ADMIN') %}
+		<a href='/admin' class="btn btn-dark">Dashboard</a>
+	{% endif %}
 {% endblock %}

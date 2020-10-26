@@ -1,0 +1,39 @@
+{% extends "base.html.twig" %}
+
+{% block title %}
+	{{site}}
+{% endblock %}
+
+{% block body %}
+	{% for flash_message in app.session.flashBag.get('notice') %}
+		<div class="flash-notice">
+			{{ flash_message }}
+		</div>
+	{% endfor %}
+	<ul>
+        <li>{{category[0].name|upper}}</li>
+        <ul>
+            {% for deal in deals %}
+                {% if category[0] in deal.categories and deal.enable and deal.user is null %}
+                    <li>Nom :
+                        {{deal.name|capitalize}}
+                        {{deal.price}}
+                        €,
+                        {{deal.description|capitalize}}
+                        -
+                        {{deal.createdAt|date('m/d/Y')}}</li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+	</ul>
+	{% if is_granted('IS_AUTHENTICATED_FULLY') %}
+		<h3>Bonjour {{ app.user.username }}</h3>
+		<a href='/logout' class="btn btn-secondary">Se déconnecter</a>
+	{% else %}
+		<a href='/login' class="btn btn-primary">Se connecter</a>
+		<a href='/signin' class="btn btn-secondary">Créer un compte</a>
+	{% endif %}
+	{% if is_granted('ROLE_ADMIN') %}
+		<a href='/admin' class="btn btn-dark">Dashboard</a>
+	{% endif %}
+{% endblock %}

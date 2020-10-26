@@ -1,0 +1,15 @@
+{% extends "base.html.twig" %}
+{% form_theme form 'bootstrap_4_layout.html.twig' %}
+{% block body %}
+	{% for flash_message in app.session.flashBag.get('error') %}
+		<div class="flash-notice alert alert-danger">
+			{{ flash_message }}
+		</div>
+	{% endfor %}
+	{{form_start(form)}}
+	{{form_errors(form)}}
+	{{form_row(form.username)}}
+	{{form_row(form.password)}}
+	{{form_row(form.save)}}
+	{{ form_end(form)}}
+{% endblock %}

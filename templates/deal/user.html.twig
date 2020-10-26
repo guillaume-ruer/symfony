@@ -1,0 +1,28 @@
+{% extends "base.html.twig" %}
+
+{% block title %}
+	{{site}}
+{% endblock %}
+
+{% block body %}
+	{% for flash_message in app.session.flashBag.get('notice') %}
+		<div class="flash-notice">
+			{{ flash_message }}
+		</div>
+	{% endfor %}
+		<h2>Mes Réservations</h2>
+		<ul>
+			{% for deal in deals %}
+				<li>Nom :
+					{{deal.name|capitalize}}
+					{{deal.price}}
+					€,
+					{{deal.description|capitalize}}
+					-
+					{{deal.createdAt|date('m/d/Y')}}
+					<a href={{"/book/delete/" ~ deal.id}} class="btn btn-danger btn-sm">Supprimer</a>
+				</li>
+			{% endfor %}
+		</ul>
+		<a href="/deal/list" class="btn btn-secondary">Retour</a>
+{% endblock %}
